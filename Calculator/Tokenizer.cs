@@ -6,12 +6,13 @@ static class Tokenizer
     {
         ("\\d+(\\.\\d+)?(e[+-]?\\d+)?", match => new Number(double.Parse(match))),
 
-        ("-",   _ => new BinaryOperation((x, y) => x - y, 1)),
+        ("(?<=[\\d|)]\\s*)-",   _ => new BinaryOperation((x, y) => x - y, 1)),
         ("\\+", _ => new BinaryOperation((x, y) => x + y, 1)),
         ("\\*", _ => new BinaryOperation((x, y) => x * y, 2)),
         ("/",   _ => new BinaryOperation((x, y) => x / y, 2)),
 
         ("&",   _ => new BinaryOperation(Math.Pow, 3, RightAssociative: true)),
+        ("-",   _ => new UnaryOperation((x) => -x, 3)),
 
         ("log", _ => new UnaryOperation(Math.Log10, 4)),
         ("ln",  _ => new UnaryOperation(Math.Log, 4)),
