@@ -16,6 +16,10 @@
                     Numbers.Push(number.Value);
                     break;
 
+                case RightParenthesis:
+                    CalculateParentheses();
+                    break;
+
                 case Operation operation:
                     while (Operations.TryPeek(out var top) && top.IsPriorThan(operation))
                     {
@@ -30,10 +34,30 @@
 
         while (Operations.TryPop(out var operation))
         {
+            if (operation is LeftParenthesis)
+            {
+                throw new ArgumentException("The expression has unbalanced parentheses");
+            }
+
             Calculate(operation);
         }
 
         return Numbers.Pop();
+    }
+
+    static void CalculateParentheses()
+    {
+        while (true)
+        {
+            // Throw the exception if there is no operation.
+            var top = Operations.Pop();
+            if (top is LeftParenthesis)
+            {
+                return;
+            }
+
+            Calculate(top);
+        }
     }
 
     static void Calculate(Operation operation)

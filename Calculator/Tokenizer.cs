@@ -12,6 +12,9 @@ static class Tokenizer
         ("/",   _ => new BinaryOperation((x, y) => x / y, 2)),
 
         ("&",   _ => new BinaryOperation(Math.Pow, 3, RightAssociative: true)),
+
+        ("\\(", _ => new LeftParenthesis()),
+        ("\\)", _ => new RightParenthesis()),
     };
 
     static readonly Regex Regex;
@@ -45,10 +48,15 @@ record Token;
 
 record Number(double Value) : Token;
 
-record Operation(int Priority, bool RightAssociative = false) : Token
+record Operation(int? Priority = null, bool RightAssociative = false) : Token
 {
     public bool IsPriorThan(Operation next)
     {
+        if (Priority is null)
+        {
+            return false;
+        }
+
         if (Priority > next.Priority)
         {
             return true;
@@ -63,7 +71,8 @@ record Operation(int Priority, bool RightAssociative = false) : Token
     }
 }
 
-
-record BinaryOperation(Func<double, double, double> Calculate, int Priority, bool RightAssociative = false)
+record BinaryOperation(Func<double, double, double> Calculate, int? Priority, bool RightAssociative = false)
     : Operation(Priority, RightAssociative);
 
+record LeftParenthesis : Operation;
+record RightParenthesis : Operation;
