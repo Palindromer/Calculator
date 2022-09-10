@@ -13,6 +13,21 @@ static class Tokenizer
 
         ("&",   _ => new BinaryOperation(Math.Pow, 3, RightAssociative: true)),
 
+        ("log", _ => new UnaryOperation(Math.Log10, 4)),
+        ("ln",  _ => new UnaryOperation(Math.Log, 4)),
+        ("exp", _ => new UnaryOperation(Math.Exp, 4)),
+        ("sqrt",_ => new UnaryOperation(Math.Sqrt, 4)),
+        ("abs", _ => new UnaryOperation(Math.Abs, 4)),
+        ("atan",_ => new UnaryOperation(Math.Atan, 4)),
+        ("acos",_ => new UnaryOperation(Math.Acos, 4)),
+        ("asin",_ => new UnaryOperation(Math.Asin, 4)),
+        ("sinh",_ => new UnaryOperation(Math.Sinh, 4)),
+        ("cosh",_ => new UnaryOperation(Math.Cosh, 4)),
+        ("tanh",_ => new UnaryOperation(Math.Tanh, 4)),
+        ("tan", _ => new UnaryOperation(Math.Tan, 4)),
+        ("sin", _ => new UnaryOperation(Math.Sin, 4)),
+        ("cos", _ => new UnaryOperation(Math.Cos, 4)),
+
         ("\\(", _ => new LeftParenthesis()),
         ("\\)", _ => new RightParenthesis()),
     };
@@ -73,6 +88,9 @@ record Operation(int? Priority = null, bool RightAssociative = false) : Token
 
 record BinaryOperation(Func<double, double, double> Calculate, int? Priority, bool RightAssociative = false)
     : Operation(Priority, RightAssociative);
+
+record UnaryOperation(Func<double, double> Calculate, int? Priority)
+    : Operation(Priority, RightAssociative: true);
 
 record LeftParenthesis : Operation;
 record RightParenthesis : Operation;

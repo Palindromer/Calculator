@@ -69,5 +69,11 @@
             var result = binary.Calculate(left, right);
             Numbers.Push(result);
         }
+        else if (operation is UnaryOperation unary)
+        {
+            var right = Numbers.Pop();
+            var result = unary.Calculate(right);
+            Numbers.Push(result);
+        }
     }
 }
