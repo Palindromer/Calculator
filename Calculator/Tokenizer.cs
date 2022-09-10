@@ -31,6 +31,8 @@ static class Tokenizer
 
         ("\\(", _ => new LeftParenthesis()),
         ("\\)", _ => new RightParenthesis()),
+
+        ("\\S", _ => throw new Exception("Unknown symbols")),
     };
 
     static readonly Regex Regex;
