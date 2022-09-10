@@ -6,10 +6,10 @@ static class Tokenizer
     {
         ("\\d+(\\.\\d+)?(e[+-]?\\d+)?", match => new Number(double.Parse(match))),
 
-        ("-",   _ => new BinaryOperation((x, y) => x - y)),
-        ("\\+", _ => new BinaryOperation((x, y) => x + y)),
-        ("\\*", _ => new BinaryOperation((x, y) => x * y)),
-        ("/",   _ => new BinaryOperation((x, y) => x / y)),
+        ("-",   _ => new BinaryOperation((x, y) => x - y, 1)),
+        ("\\+", _ => new BinaryOperation((x, y) => x + y, 1)),
+        ("\\*", _ => new BinaryOperation((x, y) => x * y, 2)),
+        ("/",   _ => new BinaryOperation((x, y) => x / y, 2)),
     };
 
     static readonly Regex Regex;
@@ -43,8 +43,25 @@ record Token;
 
 record Number(double Value) : Token;
 
-record Operation() : Token;
+record Operation(int Priority) : Token
+{
+    public bool IsPriorThan(Operation next)
+    {
+        if (Priority > next.Priority)
+        {
+            return true;
+        }
 
-record BinaryOperation(Func<double, double, double> Calculate)
-    : Operation();
+        if (Priority == next.Priority)
+        {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
+record BinaryOperation(Func<double, double, double> Calculate, int Priority)
+    : Operation(Priority);
 
